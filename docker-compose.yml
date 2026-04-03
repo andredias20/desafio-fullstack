@@ -1,0 +1,68 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: weather_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-weather}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-weather123}
+      POSTGRES_DB: ${POSTGRES_DB:-weatherdb}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - weather-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-weather}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: weather_api
+    restart: unless-stopped
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: >
+        Host=db;Port=5432;Database=${POSTGRES_DB:-weatherdb};
+        Username=${POSTGRES_USER:-weather};Password=${POSTGRES_PASSWORD:-weather123}
+      WeatherProvider__ApiKey: ${OPENWEATHER_API_KEY}
+      WeatherProvider__UseProvider: ${USE_PROVIDER:-OpenWeather}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - weather-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000}
+    container_name: weather_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - weather-network
+
+volumes:
+  pg_data:
+
+networks:
+  weather-network:
+    driver: bridge

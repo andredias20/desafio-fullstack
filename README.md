@@ -1,85 +1,90 @@
-# Desafio C# - Aliare
+# Weather App
 
-Quer fazer parte da transformação do campo ~~escrevendo~~ codando o futuro do agronegócio?
+Aplicação full-stack para consulta e registro de temperaturas por cidade ou coordenadas geográficas, com visualização de histórico.
 
-Se deseja participar do nosso processo seletivo, siga as instruções deste desafio e execute os seguintes passos: 
+## Tecnologias
 
-* Nos mande sua resolução em um *pull request* neste repositório.
+- **Backend:** .NET 8 (C#), Clean Architecture, EF Core, PostgreSQL
+- **Frontend:** Vue 3 + TypeScript, Vite, Pinia, Chart.js
+- **Infra:** Docker, docker-compose, Nginx
 
-* Deixe a aplicação disponível publicamente em imagem docker em qualquer host. Na descrição do PR passe o link para que consigamos usar sua imagem.
+## Pré-requisitos
 
-* Por último, caso você ainda não esteja no processo seletivo, envie um email para [murilo.silva@aliare.co](mailto:murilo.silva@aliare.co) com seu CV anexado e o link da aplicação (se já estiver no processo seletivo, não precisa);
+- Docker >= 24 e Docker Compose >= 2
+- Chave de API do [OpenWeatherMap](https://openweathermap.org/api) (gratuita)
 
-  
+## Como executar
 
-# Sobre a Aliare
+1. Clone o repositório:
+```bash
+   git clone https://github.com/seu-usuario/weather-app.git
+   cd weather-app
+```
 
-A [Aliare](https://www.aliare.co/) é a maior empresa TECH AGRO do Brasil. Somos a plataforma de cooperação do agronegócio, conectando pessoas, ferramentas e empresas para transformar tempo em produtividade. Existimos para que todos os agentes da cadeia produtiva tenham informações certas, no tempo certo.
+2. Crie o arquivo de variáveis de ambiente:
+```bash
+   cp .env.example .env
+```
 
-Nascemos do legado de três grandes empresas: Siagri, Datacoper e BTG, movidas pelo desejo de transformar o agronegócio do futuro.
+3. Preencha sua chave no `.env`:
+```env
+   OPENWEATHER_API_KEY=sua_chave_aqui
+```
 
-**Tudo que o agro precisa logo ali.**
+4. Suba os serviços:
+```bash
+   docker compose up -d --build
+```
 
+5. Acesse:
+   - Frontend: http://localhost:80
+   - API + Swagger: http://localhost:5000/swagger
+   - Health check: http://localhost:5000/health
 
-# O desafio
+## Variáveis de ambiente
 
-O objetivo deste desafio é avaliar sua capacidade de projetar e desenvolver uma aplicação full-stack utilizando .NET 8 (C#) no backend e Vue 3 (TypeScript) no frontend, consumindo uma API REST e persistindo dados em banco relacional.
+| Variável | Descrição | Padrão |
+|---|---|---|
+| `OPENWEATHER_API_KEY` | Chave da API OpenWeatherMap | — |
+| `USE_PROVIDER` | `OpenWeather` ou `Fake` | `OpenWeather` |
+| `POSTGRES_USER` | Usuário do banco | `weather` |
+| `POSTGRES_PASSWORD` | Senha do banco | `weather123` |
+| `POSTGRES_DB` | Nome do banco | `weatherdb` |
+| `VITE_API_URL` | URL da API para o frontend | `http://localhost:5000` |
 
-A aplicação deve permitir que o usuário consulte e registre informações de clima de diferentes localidades, com visualização de histórico.
+> Para desenvolvimento sem chave de API, use `USE_PROVIDER=Fake` no `.env`.
 
+## Endpoints principais
 
-## Requisitos
-- Registrar temperatura por cidade
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/temperature/city` | Registra temperatura por cidade |
+| `POST` | `/api/temperature/coordinates` | Registra temperatura por lat/lon |
+| `GET` | `/api/temperature/history` | Histórico dos últimos 30 dias |
+| `GET` | `/health` | Health check da API |
 
-  - Deve existir um endpoint que receba o nome da cidade.
-  - A aplicação deve consultar um provedor de clima (ou simulado/fake provider), persistir o resultado no banco de dados e retornar a temperatura atual.
+Documentação completa disponível no Swagger em `/swagger`.
 
-- Registrar temperatura por coordenadas
+## Executar testes
+```bash
+# Testes unitários e de integração
+docker compose run --rm api dotnet test
 
-  - Deve existir um endpoint que receba a latitude e longitude.
-  - A aplicação deve consultar o provedor de clima, persistir o resultado no banco de dados e retornar a temperatura atual.
+# Ou localmente (requer .NET 8 SDK)
+cd backend
+dotnet test
+```
 
-- Consultar histórico de temperaturas
+## Estrutura do projeto
 
-  - Deve existir um endpoint que receba o nome da cidade ou as coordenadas (lat/long).
-  - O sistema deve retornar o histórico de temperaturas registradas para a localidade nos últimos 30 dias, ordenadas do mais recente para o mais antigo.
-
-- Interface Web
-
-  - A aplicação deve possuir um frontend em Vue 3 + TypeScript que permita:
-    - Informar o nome da cidade para registrar a leitura de temperatura.
-    - Consultar e visualizar o histórico de temperaturas em lista e em gráfico.
-## Requisitos não funcionais
-
-- A aplicação deve ser desenvolvida em .NET 8 (C#) no backend e Vue 3 + TypeScript no frontend.
-- O banco de dados deve ser relacional (PostgreSQL).
-- Deve haver documentação da API via Swagger.
-- O sistema deve expor um health check em /health.
-- O código deve conter testes automatizados (unitários e pelo menos um de integração).
-- A solução deve ser conteinerizada com Docker, com docker-compose.yml para orquestrar API, banco e frontend.
-- O repositório deve conter instruções claras no README.md para execução da aplicação.
-
-- Será considerado ponto extra:
- - Autenticação JWT para endpoints de escrita.
- - Feature flag para troca de provedor de clima.
- - Aplicativo .NET MAUI simples consumindo a API.
- - Pipeline de CI/CD configurado (GitHub Actions).
-  
-Obs.: Não se preocupe com os pontos extras, faça-os se você se sentir confortável e se tiver tempo, consideraremos seu código **desclassificado se seu projeto não estiver funcionando** ou se não tiver os requisitos básicos implementados e funcionais.
-
-## Dicas
-
-- Você pode usar a API do *[OpenWeatherMaps](https://openweathermap.org)* para buscar dados de temperatura;
-- Certifique-se que sua imagem está funcionando perfeitamente com um simples: `docker run -d --name desafio-csharp -port 5000:5000 [seu_docker_hub]/desafio-csharp`, isso te dará pontos extras;
-
-## Recomendações
-
-* Utilize boas práticas de codificação, isso será avaliado;
-* Código limpo, organizado e documentado (quando necessário);
-* Use e abuse de:
-  * SOLID;
-  * Criatividade;
-  * Performance;
-  * Manutenabilidade;
-  * Testes Unitários
-  * ... pois avaliaremos tudo isso!
+weather-app/
+├── backend/
+│   ├── WeatherApp.Domain/        # Entidades e interfaces
+│   ├── WeatherApp.Application/   # CQRS, casos de uso
+│   ├── WeatherApp.Infrastructure/# EF Core, providers externos
+│   ├── WeatherApp.API/           # Controllers, Swagger, DI
+│   └── WeatherApp.Tests/         # Testes unitários e integração
+├── frontend/                     # Vue 3 + TypeScript
+├── .env.example
+├── docker-compose.yml
+└── README.md

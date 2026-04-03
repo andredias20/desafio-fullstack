@@ -1,0 +1,8 @@
+services:
+  weatherapp:
+    image: weatherapp
+    build:
+      context: .
+      dockerfile: WeatherApp.API/Dockerfile
+    ports:
+      - "8080:8080"
