@@ -104,7 +104,7 @@ cd desafio-fullstack
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-# JWT — obrigatório, mínimo 32 bytes
+# JWT — obrigatório, mínimo 32 caracteres
 JWT_SECRET=troque-por-uma-chave-secreta-longa-e-aleatoria
 
 # Provider de clima
