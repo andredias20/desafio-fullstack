@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WeatherApp.API.Queries;
 using WeatherApp.API.Requests;
@@ -8,6 +9,7 @@ using WeatherApp.Application.Queries;
 
 namespace WeatherApp.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TemperatureController(IMediator mediator) : ControllerBase

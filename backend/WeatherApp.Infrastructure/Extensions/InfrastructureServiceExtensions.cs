@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherApp.Domain.Interfaces;
 using WeatherApp.Infrastructure.Persistence;
+using WeatherApp.Infrastructure.Services;
 using WeatherApp.Infrastructure.WeatherProviders;
 
 namespace WeatherApp.Infrastructure.Extensions;
@@ -15,6 +16,8 @@ public static class InfrastructureServiceExtensions
             opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<ITemperatureRepository, TemperatureRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IJwtService, JwtService>();
 
         var useProvider = configuration["UseProvider"];
 
