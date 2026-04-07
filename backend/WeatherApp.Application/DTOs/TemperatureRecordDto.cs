@@ -1,6 +1,6 @@
-namespace WeatherApp.Domain.Entities;
+namespace WeatherApp.Application.DTOs;
 
-public class TemperatureRecord
+public class TemperatureRecordDto
 {
     public long Id { get; set; }
     public string? CityName { get; set; }

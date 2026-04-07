@@ -21,18 +21,17 @@ services:
   api:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: WeatherApp.API/Dockerfile
     container_name: weather_api
     restart: unless-stopped
     ports:
       - "5000:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__DefaultConnection: >
-        Host=db;Port=5432;Database=${POSTGRES_DB:-weatherdb};
-        Username=${POSTGRES_USER:-weather};Password=${POSTGRES_PASSWORD:-weather123}
-      WeatherProvider__ApiKey: ${OPENWEATHER_API_KEY}
-      WeatherProvider__UseProvider: ${USE_PROVIDER:-OpenWeather}
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-weatherdb};Username=${POSTGRES_USER:-weather};Password=${POSTGRES_PASSWORD:-weather123}"
+      OpenWeather__BaseUrl: "https://api.openweathermap.org/data/2.5/"
+      OpenWeather__ApiKey: ${OPENWEATHER_API_KEY:-}
+      UseProvider: ${USE_PROVIDER:-fake}
     depends_on:
       db:
         condition: service_healthy
