@@ -137,15 +137,6 @@ O Compose sobe três serviços em ordem: `db` → `api` (aguarda health check do
 | Swagger (API) | http://localhost:5000/swagger |
 | Health check | http://localhost:5000/health |
 
-### Parar os serviços
-
-```bash
-docker compose down          # mantém o volume do banco
-docker compose down -v       # remove tudo, incluindo dados
-```
-
----
-
 ## Variáveis de ambiente
 
 | Variável | Descrição | Padrão |
