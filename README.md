@@ -95,8 +95,8 @@ O Nginx proxy o tráfego de `/api/` para o container da API, eliminando CORS em 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/andredias20/weather-app.git
-cd weather-app
+git clone https://github.com/andredias20/desafio-fullstack.git
+cd desafio-fullstack
 ```
 
 ### 2. Configure as variáveis de ambiente
