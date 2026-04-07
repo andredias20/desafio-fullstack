@@ -19,7 +19,7 @@ public class OpenWeatherProvider : IWeatherProvider
 
     public async Task<WeatherResult> GetTemperatureAsync(string cityName, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"weather?q={cityName}&appid={_apiKey}&units=metric&lang=pt_br", ct);
+        var response = await _httpClient.GetAsync($"weather?q={cityName}&appid={_apiKey}&units=metric", ct);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadFromJsonAsync<OpenWeatherResponse>(ct);
         return new WeatherResult(content!.Main.Temp, content.Name);
@@ -27,7 +27,7 @@ public class OpenWeatherProvider : IWeatherProvider
 
     public async Task<WeatherResult> GetTemperatureAsync(double latitude, double longitude, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"weather?lat={latitude}&lon={longitude}&appid={_apiKey}&units=metric&lang=pt_br", ct);
+        var response = await _httpClient.GetAsync($"weather?lat={latitude}&lon={longitude}&appid={_apiKey}&units=metric", ct);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadFromJsonAsync<OpenWeatherResponse>(ct);
         return new WeatherResult(content!.Main.Temp, content.Name);

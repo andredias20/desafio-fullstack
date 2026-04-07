@@ -25,7 +25,7 @@ public class TemperatureRepository : ITemperatureRepository
             .Where(r => r.RecordedAt >= DateTime.UtcNow.AddDays(-30));
 
         if (cityName is not null)
-            query = query.Where(r => r.CityName == cityName);
+            query = query.Where(r => EF.Functions.ILike(r.CityName, $"%{cityName}%"));
         else if (latitude is not null && longitude is not null)
             query = query.Where(r => r.Latitude == latitude && r.Longitude == longitude);
 

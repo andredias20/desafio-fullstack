@@ -4,7 +4,7 @@ namespace WeatherApp.API.Queries;
 
 public record HistoryQuery
 {
-    [FromQuery(Name = "city")]
+    [FromQuery(Name = "cityName")]
     public string? CityName { get; init; }
     public double? Latitude { get; init; }
     public double? Longitude { get; init; }
